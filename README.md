@@ -1,10 +1,10 @@
-Usuarios disponibles a utilizar para logearse.
-usuario1:
-user: userTest1   passwrod : passTest1
-usuario2:
-user : maria   password: maria123
-usuario3:
-user: carlos  password carlos123
+Usuarios disponibles a utilizar para logearse. <br>
+usuario1:   <br>
+user: userTest1   passwrod : passTest1 <br>
+usuario2: <br>
+user : maria   password: maria123 <br>
+usuario3: <br>
+user: carlos  password carlos123 <br>
 
 
 # Stack tecnológico utilizado
