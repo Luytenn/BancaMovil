@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">BancaMovil</string>
+
+    <string name="error_auth_user">Usuario Incorrecto</string>
+    <string name="recipe_details_likes_title">Likes</string>
+
+</resources>
