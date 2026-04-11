@@ -1,10 +1,7 @@
-Usuarios disponibles a utilizar para logearse. <br>
-usuario1:   <br>
-user: userTest1   passwrod : passTest1 <br>
-usuario2: <br>
-user : maria   password: maria123 <br>
-usuario3: <br>
-user: carlos  password carlos123 <br>
+Usuarios válidos para ingresar al aplicativo *
+• usr: userTest1 / pass: passTest1
+• usr: User@test/ pass: TestPass_
+• usr: user123& / pass: 123456
 
 
 # Stack tecnológico utilizado
