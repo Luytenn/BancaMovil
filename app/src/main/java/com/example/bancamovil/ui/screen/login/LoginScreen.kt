@@ -67,6 +67,7 @@ import com.example.bancamovil.ui.components.UsernameComponent
 import com.example.bancamovil.ui.navigation.Navigate
 import com.example.bancamovil.ui.theme.BancaMovilTheme
 import com.example.bancamovil.ui.theme.blue500
+import com.example.bancamovil.util.InputFilter
 import kotlinx.coroutines.launch
 
 @Composable
@@ -107,8 +108,6 @@ fun LoginContent(paddingScaffold: PaddingValues = PaddingValues(), navController
                     .padding(horizontal = 26.dp, vertical = 0.dp)
 
             ) {
-
-
                 Image(
                     modifier = Modifier
                         .fillMaxSize(1f),
@@ -129,10 +128,7 @@ fun LoginContent(paddingScaffold: PaddingValues = PaddingValues(), navController
                 UsernameComponent(
                     value = username,
                     onValueChange = { text ->
-                        scope.launch {
-                            val filtered = text.filter { it.isLetterOrDigit() }
-                            viewModel.onUsernameChanged(filtered)
-                        }
+                        viewModel.onUsernameChanged(text)
                     },
                     keyboarOptions = KeyboardOptions.Default,
                     keyboardActions = KeyboardActions.Default,
@@ -178,10 +174,7 @@ fun LoginContent(paddingScaffold: PaddingValues = PaddingValues(), navController
                         },
                     value = password,
                     onValueChange = { pass ->
-                        scope.launch {
-                            val filtered = pass.filter { it.isLetterOrDigit() }
-                            viewModel.onPassowrdChanged(filtered)
-                        }
+                        viewModel.onPassowrdChanged(pass)
                     },
                     passwordVisible = passwordVisible,
                     returnPassVisible = { passwordVisible = it },

@@ -5,10 +5,14 @@ import androidx.lifecycle.viewModelScope
 import com.example.bancamovil.domain.model.Card
 import com.example.bancamovil.domain.model.Users
 import com.example.bancamovil.domain.use_case.GetCardUserUseCase
+import com.example.bancamovil.domain.use_case.session.ClearSessionUseCase
+import com.example.bancamovil.domain.use_case.session.GetSessionUseCase
+import com.example.bancamovil.domain.use_case.session.SaveSessionUseCase
 import com.example.bancamovil.ui.components.UiState
 import com.example.bancamovil.ui.screen.login.LoginEvent
 import com.example.bancamovil.util.ResultWrapper
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
@@ -18,7 +22,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AccountViewModel @Inject constructor(
-    val getCardUserUseCase: GetCardUserUseCase
+    private val getCardUserUseCase: GetCardUserUseCase,
+    private val clearSessionUseCase: ClearSessionUseCase,
+    private val getSessionUseCase: GetSessionUseCase
 ): ViewModel() {
 
     private val _uiState = MutableStateFlow<UiState<AccountEvent>>(UiState.Idle)
@@ -30,7 +36,15 @@ class AccountViewModel @Inject constructor(
     private val _message = MutableStateFlow("")
     val message: StateFlow<String> = _message
 
+    init {
 
+    }
+
+    fun clearSession() {
+        viewModelScope.launch(Dispatchers.IO) {
+            clearSessionUseCase.invoke()
+        }
+    }
     fun getCardByUser(userId: Int) {
         viewModelScope.launch {
             getCardUserUseCase(userId).onEach { send ->
@@ -43,6 +57,12 @@ class AccountViewModel @Inject constructor(
                         _message.value = send.message.toString()
                     }
                     is ResultWrapper.Success -> {
+
+                        val res = getSessionUseCase.invoke("idUserKey")
+                        res.let {
+                            println("return idUserKey " + res)
+                        }
+
                         _uiState.value = UiState.Success(AccountEvent.SuccessAccount(send.data!!))
                         _listCard.value = send.data
                     }

@@ -55,6 +55,7 @@ fun AccountScreen(
         topBar = {
             TopAppBar(titleScreen = "Productos"
             ) {
+                accountViewModel.clearSession()
                 navController.navigate(Screen.LogiScreen.route)
             }
         },

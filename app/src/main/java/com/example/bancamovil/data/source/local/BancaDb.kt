@@ -9,7 +9,7 @@ import androidx.room.RoomDatabase
         CardEntity::class,
         TransferEntity::class
     ],
-    version = 17
+    version = 1
 )
 //@TypeConverters(DataConverter::class)
 abstract class BancaMovilDB : RoomDatabase() {

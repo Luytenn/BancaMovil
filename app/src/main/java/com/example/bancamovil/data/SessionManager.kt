@@ -4,12 +4,8 @@ package com.example.bancamovil.data
 class SessionManager(
 ) {
     private var lastInteractionTime: Long? = null
-    private val timeout = 20 * 1000L // 20 segundos
+    private val timeout = 2 * 60 * 1000L
 
-    //llamar cuando el usuario hace login
-    fun startSession() {
-        lastInteractionTime = System.currentTimeMillis()
-    }
 
     fun updateLastActivity() {
         lastInteractionTime = System.currentTimeMillis()

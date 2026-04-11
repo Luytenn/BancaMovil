@@ -12,7 +12,9 @@ import com.example.bancamovil.domain.use_case.InsertUserUseCase
 import com.example.bancamovil.domain.use_case.SaveCardUseCase
 import com.example.bancamovil.domain.use_case.SaveTransferUseCase
 import com.example.bancamovil.domain.use_case.ValidateEmptyTable
+import com.example.bancamovil.domain.use_case.session.SaveSessionUseCase
 import com.example.bancamovil.ui.components.UiState
+import com.example.bancamovil.util.InputFilter
 import com.example.bancamovil.util.ResultWrapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -25,6 +27,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.Int
+import kotlin.text.matches
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
@@ -32,7 +35,8 @@ class LoginViewModel @Inject constructor(
     private val insertUserUseCase: InsertUserUseCase,
     private val saveCardUseCase: SaveCardUseCase,
     private val saveTransferUseCase: SaveTransferUseCase,
-    private val ValidateEmptyTable: ValidateEmptyTable
+    private val ValidateEmptyTable: ValidateEmptyTable,
+    private val saveSessionUseCase: SaveSessionUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<UiState<LoginEvent>>(UiState.Idle)
@@ -53,8 +57,6 @@ class LoginViewModel @Inject constructor(
                 initializeData()
              }
         }
-
-
     }
 
     suspend fun initializeData() {
@@ -64,20 +66,20 @@ class LoginViewModel @Inject constructor(
                     UserEntity(
                         id = 1,
                         fullName = "Juan Perez",
-                        username = "juan",
-                        passwordHash = "juan123"
+                        username = "userTest1",
+                        passwordHash = "passTest1"
                     ),
                     UserEntity(
                         id = 2,
                         fullName = "Maria Lopez",
-                        username = "maria",
-                        passwordHash = "maria123"
+                        username = "User@test",
+                        passwordHash = "TestPass_"
                     ),
                     UserEntity(
                         id = 3,
                         fullName = "Carlos Ruiz",
-                        username = "carlos",
-                        passwordHash = "carlos123"
+                        username = "user123&",
+                        passwordHash = "123456"
                     )
                 )
             )
@@ -242,10 +244,7 @@ class LoginViewModel @Inject constructor(
                     TransferEntity(cardId=  2,  userId = 1, amount = 2502.0, destinationAccount = "PLIN 888",  typeTransfer = "PLIN", timestamp = System.currentTimeMillis()),
                     TransferEntity(cardId=  2,  userId = 1, amount = 38.0, destinationAccount = "PLIN 888",  typeTransfer = "PLIN", timestamp = System.currentTimeMillis()),
                     TransferEntity(cardId=  2,  userId = 1, amount = 257.0, destinationAccount = "PLIN 888",  typeTransfer = "PLIN", timestamp = System.currentTimeMillis()),
-                    TransferEntity(cardId=  2,  userId = 1, amount = 285.0, destinationAccount = "PLIN 888",  typeTransfer = "PLIN", timestamp = System.currentTimeMillis()),
                     TransferEntity(cardId=  2,  userId = 1, amount = 124.0, destinationAccount = "PLIN 888",  typeTransfer = "PLIN", timestamp = System.currentTimeMillis()),
-                    TransferEntity(cardId=  2,  userId = 1, amount = 512.0, destinationAccount = "PLIN 888",  typeTransfer = "PLIN", timestamp = System.currentTimeMillis()),
-                    TransferEntity(cardId=  2,  userId = 1, amount = 239.0, destinationAccount = "PLIN 888",  typeTransfer = "PLIN", timestamp = System.currentTimeMillis()),
                     TransferEntity(cardId = 3, userId =  2,amount = 123.0, destinationAccount = "CARD EXT", typeTransfer = "CARD", timestamp = System.currentTimeMillis()),
                     TransferEntity(cardId = 4, userId =  2,amount = 75.0, destinationAccount = "SHOP", typeTransfer = "CARD", timestamp = System.currentTimeMillis()),
                     TransferEntity(cardId = 5, userId =  3,amount = 200.0, destinationAccount =  "RENT", typeTransfer = "YAPE", timestamp = System.currentTimeMillis()),
@@ -254,12 +253,17 @@ class LoginViewModel @Inject constructor(
             )
     }
 
-    suspend fun onUsernameChanged(username: String) {
-        _username.value = username
+     fun onUsernameChanged(username: String) {
+        if (username.matches(Regex("^[a-zA-Z0-9@._&-]{0,30}$"))) {
+            _username.value = username
+        }
     }
 
-    suspend fun onPassowrdChanged(password: String) {
-        _password.value = password
+     fun onPassowrdChanged(password: String) {
+        if (password.matches(Regex("^[a-zA-Z0-9@._&-]{0,30}$"))) {
+            _password.value = password
+        }
+
     }
 
     fun AuthLogin(username:String, password: String) {
@@ -273,6 +277,7 @@ class LoginViewModel @Inject constructor(
                          _uiState.value = UiState.Empty(send.message.toString())
                      }
                      is ResultWrapper.Success -> {
+                         saveSessionUser(send.data?.id?:0)
                          _uiState.value = UiState.Success(LoginEvent.SuccessLogin(send.data!!))
                      }
                      else -> {}
@@ -280,6 +285,10 @@ class LoginViewModel @Inject constructor(
              }.launchIn(viewModelScope)
          }
 
+    }
+
+    suspend fun saveSessionUser(userId: Int){
+        saveSessionUseCase.invoke("idUserKey",userId)
     }
 
     fun setIdle() {

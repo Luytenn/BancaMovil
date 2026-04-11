@@ -3,10 +3,16 @@ package com.example.bancamovil
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.bancamovil.data.SessionManager
+import com.example.bancamovil.domain.use_case.session.GetSessionUseCase
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 abstract class BaseActivity : ComponentActivity() {
     lateinit var sessionManager: SessionManager
+    @Inject
+    lateinit var sessionUseCase: GetSessionUseCase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -15,10 +21,15 @@ abstract class BaseActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (sessionManager.isSessionExpired()) {
-            onSessionExpired()
-        } else {
-            sessionManager.updateLastActivity()
+        lifecycleScope.launch {
+            val res  = sessionUseCase.invoke("idUserKey")
+            res.let {
+                if (sessionManager.isSessionExpired()) {
+                    onSessionExpired()
+                } else {
+                    sessionManager.updateLastActivity()
+                }
+            }
         }
     }
 

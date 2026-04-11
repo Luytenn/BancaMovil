@@ -57,7 +57,6 @@ fun UsernameComponent(
     onValueChange: (String) -> Unit,
     keyboardActions: KeyboardActions,
     keyboarOptions: KeyboardOptions,
-
     ) {
     Row {
         TextFieldComponent(
