@@ -1,7 +1,7 @@
-Usuarios válidos para ingresar al aplicativo *
-• usr: userTest1 / pass: passTest1
-• usr: User@test/ pass: TestPass_
-• usr: user123& / pass: 123456
+Usuarios válidos para ingresar al aplicativo *  <br> 
+• usr: userTest1 / pass: passTest1  <br>
+• usr: User@test / pass: TestPass_  <br>
+• usr: user123& / pass: 123456 <br>
 
 
 # Stack tecnológico utilizado
